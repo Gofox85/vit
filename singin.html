@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New User Registration</title>
+  <link rel="stylesheet" href="logincss.css">
+</head>
+<body>
+  <div class="overlay">
+    <div class="login-box">
+      <h2>New User Singin</h2>
+      <form onsubmit="return validateRegister()"  action="login.html">
+        <input type="email" id="regEmail" placeholder="Email ID" required>
+        <input type="text" id="username" placeholder="User Name" required>
+        <input type="password" id="regPassword" placeholder="Password" required>
+        <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+        <button type="submit" class="btn">Register</button>
+      </form>
+      <p class="small">Already have an account? <a href="login.html" style="color:#6c63ff;">Login</a></p>
+    </div>
+  </div>
+  <script src="login.js"></script>
+</body>
+</html>
