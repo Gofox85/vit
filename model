@@ -1,0 +1,41 @@
+import sqlite3
+import pandas as pd
+import numpy as np
+def setup_db():
+    conn = sqlite3.connect("learning_app.db")
+    cur = conn.cursor()
+    cur.execute('''CREATE TABLE IF NOT EXISTS users(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE,
+        test_score REAL DEFAULT 0.0
+    )''')
+    sample_users = [("john", 25), ("jane", 65), ("mike", 85)]
+    cur.executemany("INSERT OR IGNORE INTO users(username,test_score) VALUES(?,?)", sample_users)
+    conn.commit(); conn.close()
+class Recommender:
+    def __init__(self):
+        self.resources = pd.DataFrame({
+            "title": ["Intro to Python", "HTML Basics", "OOP Concepts",
+                      "Data Structures", "Machine Learning"],
+            "difficulty": ["beginner","beginner","intermediate",
+                           "intermediate","advanced"],
+            "type": np.random.choice(["video","article","quiz"], 5)
+        })
+    def skill_level(self, score):
+        if score < 40: return "beginner"
+        elif score < 70: return "intermediate"
+        else: return "advanced"
+    def recommend(self, user_id, n=3):
+        conn = sqlite3.connect("learning_app.db")
+        user = pd.read_sql("SELECT * FROM users WHERE id=?", conn, params=[user_id])
+        conn.close()
+        if user.empty: return []
+        score = user.iloc[0]["test_score"]
+        level = self.skill_level(score)
+        recs = self.resources[self.resources["difficulty"]==level]
+        return recs.sample(min(n,len(recs)))
+if __name__ == "__main__":
+    setup_db()
+    rec = Recommender()
+    print("Recommendations for User 1:")
+    print(rec.recommend(1))
